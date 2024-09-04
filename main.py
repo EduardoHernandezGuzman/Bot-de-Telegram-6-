@@ -14,6 +14,8 @@ RSS_FEED_URL = 'https://anchor.fm/s/f174e400/podcast/rss'
 
 feed = feedparser.parse(RSS_FEED_URL)
 
+IMAGE_URL = 'https://s3-us-west-2.amazonaws.com/anchor-generated-image-bank/production/podcast_uploaded_nologo400/40409696/40409696-1715024081563-bc52ea9df01e4.jpg'
+
 # Comando /start
 @bot.message_handler(commands=['start'])
 def send_start(message):
@@ -23,13 +25,17 @@ def send_start(message):
     markup.add(btn_recomendar, btn_reciente)
 
     start_text = """
-    ¡Hola! Soy tu bot de recomendación de podcasts.
-    
+    ¡Hola! Soy Charito, tu bot de recomendación de podcasts.
+
+    Bienvenide a este "Tu podcast de referencia para la vida en general". Somos Rafa y Daniela y navegamos el proceloso océano de la cultura pop con la osadía del privilegio como bandera. Desde Real Housewives a Lady Gaga, desde Taylor Swift a Disney Adults, nuestra gay audacity nos permite hablar de cualquier cosa.
+
     Usa los botones a continuación para interactuar conmigo o escribe /buscar seguido de la palabra clave para buscar un episodio.
     """
+    
+    bot.send_photo(message.chat.id, IMAGE_URL)
+
     bot.send_message(message.chat.id, start_text, reply_markup=markup)
 
-# Manejar las interacciones con los botones inline
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
     if call.data == 'recomendar':
@@ -40,7 +46,6 @@ def handle_query(call):
 # Comando /buscar
 @bot.message_handler(commands=['buscar'])
 def buscar_episodio(message):
-    # Verificar que el comando /buscar está seguido de una palabra clave
     try:
         query = message.text.split(' ', 1)[1].lower()
     except IndexError:
@@ -51,7 +56,7 @@ def buscar_episodio(message):
     
     if resultados:
         respuesta = "Aquí tienes algunos episodios que coinciden con tu búsqueda:\n\n"
-        for episodio in resultados[:5]:  # Mostrar hasta 5 resultados
+        for episodio in resultados[:5]:
             respuesta += f"{episodio.title}\n{episodio.link}\n\n"
         bot.reply_to(message, respuesta)
     else:
