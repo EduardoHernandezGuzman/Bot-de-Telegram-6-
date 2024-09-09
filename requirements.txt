@@ -1,6 +1,5 @@
 Flask==2.3.3
-werkzeug==2.3.4
+werkzeug>=2.3.7
 python-telegram-bot==20.1
 python-dotenv==1.0.0
 feedparser==6.0.10
-
